@@ -104,7 +104,7 @@ class jsonObject:
 				str += self.new_line + self.object_prefix +  self.string_prefix + self.pointer + k+ self.line_end
 			elif isinstance(v,dict):
 				class_name = class_name + self.class_seperator + k
-				str += self.new_line + self.object_prefix + class_name + self.pointer + k + self.line_end
+				str += self.new_line + self.object_prefix + class_name + " <Optional> " + self.pointer + k + self.line_end
 				self.parseJson(v,class_name,False)
 			elif isinstance(v,list) or isinstance(v,tuple) :
 				if len(v) == 0 :
