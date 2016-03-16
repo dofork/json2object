@@ -36,6 +36,8 @@ class jsonObject:
 	long_prefix =  " long <Optional> "
 	
 	string_prefix = " NSString <Optional> "
+    
+	optional_prefix = " <Optional> "
 	
 	string = " NSString "
 	
@@ -104,18 +106,24 @@ class jsonObject:
 				str += self.new_line + self.object_prefix +  self.string_prefix + self.pointer + k+ self.line_end
 			elif isinstance(v,dict):
 				class_name = class_name + self.class_seperator + k
-				str += self.new_line + self.object_prefix + class_name + " <Optional> " + self.pointer + k + self.line_end
+				str += self.new_line + self.object_prefix + class_name + self.optional_prefix + self.pointer + k + self.line_end
 				self.parseJson(v,class_name,False)
 			elif isinstance(v,list) or isinstance(v,tuple) :
 				if len(v) == 0 :
 					self.printError( "key '" + k + "' can not be empty!");
 				value = v[0]
-				if isinstance(value,float) or isinstance(value,int) or isinstance(value,long) or isinstance(value,bool) or isinstance(value,basestring):
+				#print(value)
+				if isinstance(value,list):
+					subValue = value[0]
+					class_name = class_name + self.class_seperator + '0'
+					str += self.new_line + self.object_prefix + "NSMutableArray<NSMutableArray <"+ class_name + ">*>*"  + k + self.line_end
+					self.parseJson(subValue,class_name,True)
+				elif isinstance(value,float) or isinstance(value,int) or isinstance(value,long) or isinstance(value,bool) or isinstance(value,basestring):
 					str += self.new_line + self.object_prefix + " NSMutableArray < Optional> * " + k + self.line_end
 				else:
 					class_name = class_name + self.class_seperator + k
 					str += self.new_line + self.object_prefix + " NSMutableArray <" + class_name + ",Optional> * " + k + self.line_end
-					self.parseJson(v[0],class_name,True)
+					self.parseJson(value,class_name,True)
 		str += self.new_line+self.end+self.new_line
 		self.class_define_array.append(str)
 		
